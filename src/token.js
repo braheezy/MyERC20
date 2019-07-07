@@ -1,0 +1,1 @@
+../build/contracts/MyERC20.json
