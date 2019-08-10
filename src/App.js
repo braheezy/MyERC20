@@ -40,12 +40,12 @@ class App extends Component {
     this.setState({
       userEthAddr: tmp_address,
       factory: tmp_factory,
-      tokenCount: tmp_count.toNumber(),
+      tokenCount: Number(tmp_count),
       checking: false
     });
   }
 
-  // So children can update the count when the user creates one
+  // So children can update the count when the user creates/deletes tokens
   updateCount = async increase => {
     let count;
     if (increase) {

@@ -4,7 +4,7 @@ import TruffleContract from "truffle-contract";
 import TokenCard from "./TokenCard";
 import MyERC20 from "../token";
 import web3 from "../web3";
-import { getContractUtil } from "../data_utils";
+import { getContractUtil, cleanupAddress } from "../data_utils";
 
 class TokenSegment extends Component {
   constructor(props) {
@@ -104,11 +104,14 @@ class TokenSegment extends Component {
         return (
           <TokenCard
             key={token.address.toString()}
-            address={token.address.toString()}
+            address={cleanupAddress(token.address.toString())}
+            fullAddress={token.address.toString()}
             name={token.name}
             symbol={token.symbol}
             supply={token.supply}
+            decimals={token.decimals}
             onDeleteClick={this.deleteToken}
+            userAddress={this.props.address}
           />
         );
       });

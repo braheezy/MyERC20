@@ -19,7 +19,7 @@ class Greeter extends Component {
 
   renderText(props) {
     let text;
-
+    // eslint-disable-next-line
     if (props.ethAddress == 0 || props.ethAddress == undefined) {
       text = (
         <p>

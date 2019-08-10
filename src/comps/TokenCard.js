@@ -1,19 +1,32 @@
 import React, { Component } from "react";
-import { Card, Grid, Header, Button } from "semantic-ui-react";
+import {
+  Card,
+  Grid,
+  Header,
+  Button,
+  Modal,
+  CardDescription
+} from "semantic-ui-react";
 import TokenDetail from "./TokenDetail";
+import { getBalance } from "../data_utils";
 
 class TokenCard extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      viewClicked: false
+      balance: 0
     };
   }
 
-  onViewClick = () => {
-    console.log("TokenInfoSegment");
-    console.log(this.props);
-  };
+  async componentDidMount() {
+    console.log("tryning to get balance", this.props.userAddress);
+    let balance = await getBalance(
+      this.props.fullAddress,
+      this.props.userAddress
+    );
+    this.setState({ balance: balance.toNumber() });
+  }
 
   onDeleteClick = () => {
     console.log("onDeleteClick", this.props);
@@ -21,41 +34,47 @@ class TokenCard extends Component {
   };
 
   render() {
-    const { viewClicked } = this.state;
-    let view;
-    if (viewClicked) {
-      view = <TokenDetail />;
-    } else {
-      view = (
-        <Card className="tokenInfo" fluid>
-          <Card.Content>
-            <Grid columns={2}>
+    const { balance } = this.state;
+    return (
+      <Card className="tokenInfo">
+        <Card.Content extra>
+          <Grid columns={2}>
+            <Grid.Row>
               <Grid.Column>
                 <Header floated="left">{this.props.name}</Header>
               </Grid.Column>
               <Grid.Column>
                 <Header floated="right">{this.props.supply}</Header>
               </Grid.Column>
-            </Grid>
-            <Card.Description textAlign="left">
-              {this.props.symbol}
-            </Card.Description>
-          </Card.Content>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column textAlign="left">
+                <Card.Description>{this.props.address}</Card.Description>
+              </Grid.Column>
+              <Grid.Column textAlign="right">
+                <Card.Description>{this.props.symbol}</Card.Description>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Card.Content>
 
-          <Card.Content extra>
-            <div className="ui two buttons">
-              <Button basic color="green" onClick={this.onViewClick}>
-                View
-              </Button>
-              <Button basic color="red" onClick={this.onDeleteClick}>
-                Delete
-              </Button>
-            </div>
-          </Card.Content>
-        </Card>
-      );
-    }
-    return <>{view}</>;
+        <Card.Content extra>
+          <div className="ui two buttons">
+            <TokenDetail
+              name={this.props.name}
+              supply={this.props.supply}
+              address={this.props.fullAddress}
+              symbol={this.props.symbol}
+              decimals={this.props.decimals}
+              balance={balance}
+            />
+            <Button basic color="red" onClick={this.onDeleteClick}>
+              Delete
+            </Button>
+          </div>
+        </Card.Content>
+      </Card>
+    );
   }
 }
 

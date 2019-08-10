@@ -1,4 +1,6 @@
 import web3 from "./web3";
+import MyERC20 from "./token";
+import TruffleContract from "truffle-contract";
 
 export async function getEthAccountUtil(index) {
   let accounts;
@@ -44,6 +46,7 @@ export async function getTokenCountUtil(factoryInstance, userAddress) {
     count = await factoryInstance.tokenCount(userAddress);
   } catch (err) {
     console.log("****3*** " + err);
+    return 0;
   }
   console.log("got count: " + count);
   return count;
@@ -53,7 +56,7 @@ export function cleanupAddress(address) {
   let result = 0;
   if (address !== undefined) {
     result =
-      address.toString().substring(0, 5) + "..." + address.toString().slice(-5);
+      address.toString().substring(0, 5) + "..." + address.toString().slice(-3);
   }
   return result;
 }
@@ -67,4 +70,36 @@ export async function updateCountUtil(factoryInstance, newCount, userAddress) {
     console.log("****6*** " + err);
   }
   console.log("updateCountUtil success", t);
+}
+
+export async function getBalance(tokenAddress, address) {
+  let balance;
+  let token = TruffleContract(MyERC20);
+  token.setProvider(web3.currentProvider);
+
+  let tokenInst = await getContractUtil(token, tokenAddress);
+  try {
+    balance = await tokenInst.balanceOf(address);
+  } catch (err) {
+    console.log("****8*** " + err);
+    return 0;
+  }
+  console.log("got balance: " + balance);
+  return balance;
+}
+
+export async function getAllowance(tokenAddress, allowerAddr, allowedAddr) {
+  let allowance;
+  let token = TruffleContract(MyERC20);
+  token.setProvider(web3.currentProvider);
+
+  let tokenInst = await getContractUtil(token, tokenAddress);
+  try {
+    allowance = await tokenInst.allowance(allowerAddr, allowedAddr);
+  } catch (err) {
+    console.log("****8*** " + err);
+    return 0;
+  }
+  console.log("got allowance: " + allowance);
+  return allowance;
 }
