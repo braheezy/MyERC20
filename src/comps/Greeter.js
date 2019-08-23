@@ -3,24 +3,10 @@ import { Container } from "semantic-ui-react";
 import { cleanupAddress } from "../data_utils";
 
 class Greeter extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     count: 0
-  //   };
-  // }
-  // componentDidUpdate(prevProps) {
-  //   if (this.props !== prevProps) {
-  //     if (this.props.count !== undefined) {
-  //       this.setState({ count: this.props.count });
-  //     }
-  //   }
-  // }
-
   renderText(props) {
     let text;
     // eslint-disable-next-line
-    if (props.ethAddress == 0 || props.ethAddress == undefined) {
+    if (props.userEthAddress == 0 || props.userEthAddress == undefined) {
       text = (
         <p>
           We can't find an Ethereum address for you :(
@@ -30,17 +16,18 @@ class Greeter extends Component {
           Should you be running Ganache?
         </p>
       );
-      return text;
-    }
-    if (props.count > 0) {
+    } else if (props.showTokens) {
       // They have tokens
       text = (
-        <p>Hello {cleanupAddress(props.ethAddress)}! Here are your tokens:</p>
+        <p>
+          Hello {cleanupAddress(props.userEthAddress)}! Here are your tokens:
+        </p>
       );
     } else {
+      // haven't made tokens yet
       text = (
         <>
-          <p>Hello {cleanupAddress(props.ethAddress)}!</p>
+          <p>Hello {cleanupAddress(props.userEthAddress)}!</p>
           <p>Looks like you haven't made any tokens yet :(</p>
           <p>Why don't you go ahead and make one?</p>
         </>

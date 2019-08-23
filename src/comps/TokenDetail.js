@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Modal, Button, Header, Segment, Grid } from "semantic-ui-react";
 import TokenInteractionForm from "./TokenInteractionForm";
+import { log } from "../data_utils";
 
 class TokenDetail extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class TokenDetail extends Component {
   }
 
   handleOpen = () => {
-    console.log("tokenDetail Open props", this.props);
+    log("tokenDetail Open props", this.props);
     this.setState({ modalOpen: true });
   };
 
@@ -33,7 +34,7 @@ class TokenDetail extends Component {
         <Modal.Content>
           <Modal.Description>
             <Segment.Group compact>
-              <Segment>Address: {this.props.address}</Segment>
+              <Segment>Address: {this.props.fullTokenAddress}</Segment>
               <Segment>Symbol: {this.props.symbol}</Segment>
               <Segment>Supply: {this.props.supply} Wei</Segment>
               <Segment>Decimal: {this.props.decimals}</Segment>
@@ -47,7 +48,9 @@ class TokenDetail extends Component {
                     <Header>Interact with your token</Header>
                   </Grid.Row>
                   <Grid.Row>
-                    <TokenInteractionForm tokenAddress={this.props.address} />
+                    <TokenInteractionForm
+                      tokenAddress={this.props.fullTokenAddress}
+                    />
                   </Grid.Row>
                 </Grid>
               </Segment>

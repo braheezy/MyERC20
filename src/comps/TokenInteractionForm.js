@@ -4,7 +4,8 @@ import {
   getEthAccountUtil,
   getContractUtil,
   getBalance,
-  getAllowance
+  getAllowance,
+  log
 } from "../data_utils";
 import MyERC20 from "../token";
 import web3 from "../web3";
@@ -65,7 +66,7 @@ class TokenInteractionForm extends Component {
     this.setState({ transferLoading: true });
     const { transferTo, token, userEthAddr } = this.state;
     let { transferAmount } = this.state;
-    console.log(this.state);
+    log(this.state);
     transferAmount = parseFloat(transferAmount);
 
     await token.transfer(transferTo, transferAmount, {
@@ -84,7 +85,7 @@ class TokenInteractionForm extends Component {
     this.setState({ approveLoading: true });
     const { approvee, token, userEthAddr } = this.state;
     let { approveeAllowance } = this.state;
-    console.log(this.state);
+    log(this.state);
     approveeAllowance = parseFloat(approveeAllowance);
 
     await token.approve(approvee, approveeAllowance, {
@@ -100,9 +101,9 @@ class TokenInteractionForm extends Component {
 
   handleBalanceCheckSubmit = async () => {
     const { tokenAddress, balance_account } = this.state;
-    console.log(this.state);
+    log(this.state);
     let balance = await getBalance(tokenAddress, balance_account);
-    console.log("handled balance check", balance);
+    log("handled balance check", balance);
     const addr = balance_account;
     this.setState({
       balance_account: "",
@@ -114,14 +115,14 @@ class TokenInteractionForm extends Component {
 
   handleAllowanceCheckSubmit = async () => {
     const { tokenAddress, allowance_account, userEthAddr } = this.state;
-    console.log(this.state);
+    log(this.state);
     let allowance = await getAllowance(
       tokenAddress,
       userEthAddr,
       allowance_account
     );
     const addr = allowance_account;
-    console.log("handled allowance check", allowance);
+    log("handled allowance check", allowance);
     this.setState({
       allowance_account: "",
       allowance_account_address: addr,
@@ -172,9 +173,9 @@ class TokenInteractionForm extends Component {
       transferToLoading,
       transferToSuccess
     } = this.state;
-    console.log("redner showBalance", showBalance);
+    log("redner showBalance", showBalance);
     return (
-      <Grid celled>
+      <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
             <Form

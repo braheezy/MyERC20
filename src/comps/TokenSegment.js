@@ -1,124 +1,134 @@
 import React, { Component } from "react";
 import { List, Dimmer, Loader } from "semantic-ui-react";
-import TruffleContract from "truffle-contract";
 import TokenCard from "./TokenCard";
-import MyERC20 from "../token";
-import web3 from "../web3";
-import { getContractUtil, cleanupAddress } from "../data_utils";
+import { cleanupAddress, log } from "../data_utils";
 
 class TokenSegment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasTokens: false,
-      tokens: [],
+      // all the token info
+      tokens: [
+        /*
+        [
+          {
+            id:               int,
+            tokenAddress:     string,
+            render:           bool,
+            supply:           int,
+            name:             string,
+            symbol:           string,
+            decimals:          int,
+          },
+        ]
+        */
+      ],
+      // controls dimmer for async tasks App parent is doing
       checking: true
     };
-    // console.log("TokenSegment constructor");
   }
-  componentDidMount() {
-    // Get token info for each created token and add to state
-    // console.log("TokenSegment didMount state", this.state);
-  }
+
   async componentDidUpdate(prevProps) {
-    // console.log("TokenSegment didUpdate props", this.props);
-    let chk,
-      hsTk,
-      tk = 0;
     if (this.props !== prevProps) {
+      log("TOKEN_SEGMENT didUpdate props", this.props);
+      log("TOKEN_SEGMENT didUpdate prevProps", prevProps);
+      // should we be showing?
       if (this.props.checking !== prevProps.checking) {
-        chk = this.props.checking;
-      }
-      if (this.props.count > 0) {
-        tk = await this.updateTokenInfo(this.props);
-        hsTk = true;
-      } else {
-        hsTk = false;
-      }
-      if (tk !== 0 && tk !== undefined) {
         this.setState({
-          hasTokens: hsTk,
-          tokens: [...this.state.tokens, ...tk],
-          checking: chk
-        });
-      } else {
-        this.setState({
-          hasTokens: hsTk,
-          checking: chk
+          checking: this.props.checking
         });
       }
-    }
-  }
-  async updateTokenInfo(props) {
-    // get token info for index _count_
-    let results = [];
-    for (var i = 0; i < props.count; i++) {
-      let tokenAddress;
-      try {
-        tokenAddress = await props.factory.tokenHolders(props.address, i);
-      } catch (err) {
-        console.log("*****4****", err);
+      // only way for array length to change from props is an increase
+      if (
+        this.props.tokenInfoArray.length !== prevProps.tokenInfoArray.length
+      ) {
+        let newTokenCount =
+          this.props.tokenInfoArray.length - prevProps.tokenInfoArray.length;
+        log("TOKEN_SEGMENT tokenInfoArray length changed by", newTokenCount);
+        /* 
+        either adding one or many tokens
+        if adding many, first render
+        if adding one,
+          may be doing first render of 1 token
+          may be adding 1 token to many tokens
+        
+        only parse new tokens, from old length
+        */
+        let newTokens = this.props.tokenInfoArray.slice(
+          prevProps.tokenInfoArray.length
+        );
+        log("TOKEN_SEGMENT didUpdate newTokens slice", newTokens);
+        newTokens = newTokens.map(token => {
+          return this.parseNewTokenInfo(token);
+        });
+        log("TOKEN_SEGMENT didUpdate newTokens", newTokens);
+        this.setState(previousState => ({
+          tokens: [...previousState.tokens, ...newTokens]
+        }));
       }
-      let token = TruffleContract(MyERC20);
-      token.setProvider(web3.currentProvider);
-
-      // console.log("tokenAddress: " + tokenAddress);
-      let tokenInst = await getContractUtil(token, tokenAddress);
-
-      let name, supply, sym, dec;
-      name = await tokenInst.name();
-      supply = await tokenInst.totalSupply();
-      sym = await tokenInst.symbol();
-      dec = await tokenInst.decimals();
-
-      let result = {
-        address: tokenInst.address,
-        name: name,
-        supply: supply.toString(),
-        symbol: sym,
-        decimals: dec.toString(),
-        rendered: false
-      };
-      // console.log("TokenSegment updateTokenInfo result", result);
-      results.push(result);
     }
-    return results;
+    log("TOKEN_SEGMENT didUpdate final state", this.state);
   }
 
-  deleteToken = async address => {
-    let copy = this.state.tokens;
-    console.log("copy", copy);
+  // parse info object and stuff with data TokenSegment needs
+  parseNewTokenInfo(token) {
+    let result = {
+      tokenAddress: token.tokenAddress,
+      name: token.name,
+      supply: token.supply.toString(),
+      symbol: token.symbol,
+      decimals: token.decimals.toString(),
+      render: true
+    };
+    log("TOKEN_SEGMENT parseNewTokenInfo result", result);
+    return result;
+  }
 
-    let result = copy.filter(token => token.address !== address);
-    console.log("result", result);
+  deleteToken = address => {
+    let copy;
+    log("TOKEN_SEGMENT deleteToken this.state", this.state);
 
-    this.setState({ tokens: result });
-    console.log("TokenSegment deleteToken", this.props);
-    await this.props.updateCount(false);
+    // make copy of React state because it should be immutable
+    copy = [...this.state.tokens];
+    log("TOKEN_SEGMENT deleteToken copy", copy);
+
+    // find the token to delete and update render flag
+    copy.find(token => token.tokenAddress === address).render = false;
+
+    // if all token render flags are false, update greeter
+    let renderCount = copy.every(token => token.render === false);
+    log("TOKEN_SEGMENT renderCount", renderCount);
+    if (renderCount === true) {
+      log("TOKEN_SEGMENT about to hide greeter");
+      this.props.hideTokenGreeter();
+    }
+    this.setState({ tokens: copy });
   };
   render() {
-    const { hasTokens, tokens, checking } = this.state;
-    console.log("TokenSegment render state", this.state);
-    if (hasTokens === true && tokens.length > 0) {
-      const tokenList = tokens.map(token => {
-        return (
-          <TokenCard
-            key={token.address.toString()}
-            address={cleanupAddress(token.address.toString())}
-            fullAddress={token.address.toString()}
-            name={token.name}
-            symbol={token.symbol}
-            supply={token.supply}
-            decimals={token.decimals}
-            onDeleteClick={this.deleteToken}
-            userAddress={this.props.address}
-          />
-        );
+    const { tokens, checking } = this.state;
+    log("TOKEN_SEGMENT render state", this.state);
+    if (this.props.showTokens === true) {
+      const tokenList = tokens.map((token, index) => {
+        log("TOKEN_SEGMENT render map token", token);
+        if (token.render === true) {
+          return (
+            <TokenCard
+              key={index}
+              tokenAddress={cleanupAddress(token.tokenAddress.toString())}
+              fullTokenAddress={token.tokenAddress.toString()}
+              name={token.name}
+              symbol={token.symbol}
+              supply={token.supply}
+              decimals={token.decimals}
+              onDeleteClick={this.deleteToken}
+              userEthAddress={this.props.userEthAddress}
+            />
+          );
+        } else return <></>;
       });
 
       return <List className="tokenInfoList">{tokenList}</List>;
     } else if (checking) {
-      // console.log("TokenSegment render returning loader");
       return (
         <Dimmer inverted active style={{ height: "5em" }}>
           <Loader size="tiny">Fetching tokens...</Loader>

@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import {
-  Card,
-  Grid,
-  Header,
-  Button,
-  Modal,
-  CardDescription
-} from "semantic-ui-react";
+import { Card, Grid, Header, Button } from "semantic-ui-react";
 import TokenDetail from "./TokenDetail";
-import { getBalance } from "../data_utils";
+import { getBalance, log } from "../data_utils";
 
 class TokenCard extends Component {
   constructor(props) {
@@ -19,18 +12,22 @@ class TokenCard extends Component {
     };
   }
 
+  // do things specific to the user for this token
+  /*
+  balance
+  ...
+  */
   async componentDidMount() {
-    console.log("tryning to get balance", this.props.userAddress);
     let balance = await getBalance(
-      this.props.fullAddress,
-      this.props.userAddress
+      this.props.fullTokenAddress,
+      this.props.userEthAddress
     );
     this.setState({ balance: balance.toNumber() });
   }
 
   onDeleteClick = () => {
-    console.log("onDeleteClick", this.props);
-    this.props.onDeleteClick(this.props.address);
+    log("onDeleteClick", this.props);
+    this.props.onDeleteClick(this.props.fullTokenAddress);
   };
 
   render() {
@@ -49,7 +46,7 @@ class TokenCard extends Component {
             </Grid.Row>
             <Grid.Row>
               <Grid.Column textAlign="left">
-                <Card.Description>{this.props.address}</Card.Description>
+                <Card.Description>{this.props.tokenAddress}</Card.Description>
               </Grid.Column>
               <Grid.Column textAlign="right">
                 <Card.Description>{this.props.symbol}</Card.Description>
@@ -63,7 +60,7 @@ class TokenCard extends Component {
             <TokenDetail
               name={this.props.name}
               supply={this.props.supply}
-              address={this.props.fullAddress}
+              fullTokenAddress={this.props.fullTokenAddress}
               symbol={this.props.symbol}
               decimals={this.props.decimals}
               balance={balance}

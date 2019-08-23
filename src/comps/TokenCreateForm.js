@@ -1,39 +1,45 @@
 import React, { Component } from "react";
 import { Form, Divider } from "semantic-ui-react";
+import { log } from "../data_utils";
 
-class TokenForm extends Component {
-  state = { name: "", supply: "", symbol: "", decimal: "" };
+class TokenCreateForm extends Component {
+  constructor(props) {
+    super(props);
 
-  componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
-      if (this.props.factory !== undefined) {
-        this.setState({ factory: this.props.factory });
-      }
-      if (this.props.address !== undefined) {
-        this.setState({ address: this.props.address });
-      }
-    }
+    this.state = { name: "", supply: "", symbol: "", decimal: "" };
+  }
+
+  componentDidMount() {
+    log("TOKEN_CREATE_FORM didMount props", this.props);
   }
 
   handleChange = (e, { name, value }) => {
+    // TODO: need to let user know we only take int
     if (name === "supply" || name === "decimal") value = parseInt(value);
     this.setState({ [name]: value });
   };
 
   handleSubmit = async () => {
-    const { name, supply, symbol, decimal, factory, address } = this.state;
-    console.log("handleSumbmit state", this.state);
-    console.log(this.props);
+    const { name, supply, symbol, decimal } = this.state;
+    const { factory, userEthAddress } = this.props;
+    let success = false,
+      result;
     try {
-      await factory.createToken(supply, name, symbol, decimal, {
-        from: address
+      result = await factory.createToken(supply, name, symbol, decimal, {
+        from: userEthAddress
       });
+      success = true;
     } catch (err) {
-      console.log(err);
+      log("TOKEN_CREATE_FORM*********", err);
+      return 0;
     }
-    this.props.updateCount(true);
+    if (success) {
+      log("TOKEN_CREATE_FORM handleSubmit result", result);
+      this.props.addToken();
+    }
     this.setState({ name: "", supply: "", symbol: "", decimal: "" });
   };
+
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -41,7 +47,6 @@ class TokenForm extends Component {
           primary
           size="big"
           content="Create Token"
-          active={this.activeItem}
           onClick={this.onClick}
         />
         <Divider hidden />
@@ -56,6 +61,7 @@ class TokenForm extends Component {
           label="Total Supply"
           placeholder="Total Supply"
           name="supply"
+          type="number"
           required
           onChange={this.handleChange}
           value={this.state.supply}
@@ -73,6 +79,7 @@ class TokenForm extends Component {
           name="decimal"
           min="0"
           max="128"
+          type="number"
           onChange={this.handleChange}
           value={this.state.decimal}
         />
@@ -81,4 +88,4 @@ class TokenForm extends Component {
   }
 }
 
-export default TokenForm;
+export default TokenCreateForm;
