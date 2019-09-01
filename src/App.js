@@ -20,6 +20,7 @@ import {
   getTokenAddressUtil,
   log
 } from "./data_utils";
+import { ERROR } from "./errorCodes";
 
 class App extends Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class App extends Component {
       // should we show a convient message that they need to accept
       // connection or turn off privacy mode to continue
       showErrorMessage: false,
-      messageReason: -1
+      messageCode: ""
     };
 
     this.factoryAbstraction = TruffleContract(ERC20Factory);
@@ -105,20 +106,23 @@ class App extends Component {
 
   setupEthereumEnv = async web3 => {
     switch (web3) {
-      case 0:
+      case ERROR.UNKNOWN:
         // user needs to click connect button and enable metamask
         break;
-      case 1:
+      case ERROR.METAMASK_NO_LOGIN:
         // not logged in
         this.setState({
           checking: false,
           showErrorMessage: true,
-          messageReason: 1
+          messageCode: ERROR.METAMASK_NO_LOGIN
         });
         break;
-      case 2:
+      case ERROR.DENIED_ACCESS:
         // user denied connection
-        this.setState({ showErrorMessage: true, messageReason: 2 });
+        this.setState({
+          showErrorMessage: true,
+          messageCode: ERROR.DENIED_ACCESS
+        });
         break;
       default:
         // good web3 obtained
@@ -167,7 +171,7 @@ class App extends Component {
               userEthAddr: tmp_address,
               checking: false,
               showErrorMessage: true,
-              messageReason: 3
+              messageCode: ERROR.NO_FACTORY
             });
           }
         }
@@ -195,6 +199,7 @@ class App extends Component {
             factory={this.state.factory}
             userEthAddress={this.state.userEthAddr}
             addToken={this.addToken}
+            connected={this.state.connected}
           />
         </Grid.Row>
         <Grid.Row>
@@ -228,9 +233,7 @@ class App extends Component {
           {this.state.checking ? (
             <></>
           ) : this.state.showErrorMessage ? (
-            <ErrorMessage
-              messageReason={this.state.messageReason}
-            ></ErrorMessage>
+            <ErrorMessage messageCode={this.state.messageCode}></ErrorMessage>
           ) : !this.state.connected ? (
             <Button onClick={this.onConnect}>Connect to MetaMask</Button>
           ) : (

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Message } from "semantic-ui-react";
 import { log } from "../data_utils";
+import { ERROR } from "../errorCodes";
 
 class ErrorMessage extends Component {
   constructor(props) {
@@ -16,14 +17,13 @@ class ErrorMessage extends Component {
       case 0:
         // user needs to click connect button and enable metamask
         break;
-      case 1:
+      case ERROR.METAMASK_NO_LOGIN:
         // not logged in
         return "Not logged into MetaMask.";
-        break;
-      case 2:
+      case ERROR.DENIED_ACCESS:
         // user denied connection
         break;
-      case 3:
+      case ERROR.NO_FACTORY:
         // metamask good, no factory
         return "Cannot find ERC20 factory to interact with.";
       default:
@@ -35,7 +35,7 @@ class ErrorMessage extends Component {
     return (
       <Message
         error
-        content={this.renderMessageText(this.props.messageReason)}
+        content={this.renderMessageText(this.props.messageCode)}
       ></Message>
     );
   }

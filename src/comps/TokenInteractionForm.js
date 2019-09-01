@@ -1,27 +1,13 @@
 import React, { Component } from "react";
 import { Form, Grid, Segment, Message } from "semantic-ui-react";
-import {
-  getEthAccountUtil,
-  getContractUtil,
-  getBalance,
-  getAllowance,
-  log
-} from "../data_utils";
-import MyERC20 from "../token";
-import web3 from "../web3";
-import TruffleContract from "truffle-contract";
+import { getBalance, getAllowance, log } from "../data_utils";
 
 class TokenInteractionForm extends Component {
   constructor(props) {
     super(props);
-
-    let tokenContractAbs = TruffleContract(MyERC20);
-    tokenContractAbs.setProvider(web3.currentProvider);
+    log("TOKEN_INTERACTION_FORM constructor props", props);
 
     this.state = {
-      tokenContractAbs: tokenContractAbs,
-      userEthAddr: "",
-      token: "",
       transferTo: "",
       transferAmount: "",
       approvee: "",
@@ -44,18 +30,7 @@ class TokenInteractionForm extends Component {
     };
   }
   async componentDidMount() {
-    let tmp_address = await getEthAccountUtil(0);
-
-    let tmp_token = await getContractUtil(
-      this.state.tokenContractAbs,
-      this.props.tokenAddress
-    );
-
-    this.setState({
-      userEthAddr: tmp_address,
-      token: tmp_token,
-      tokenAddress: this.props.tokenAddress
-    });
+    log("TOKEN_INTERACTION_FORM didMount this.props", this.props);
   }
 
   handleChange = (e, { name, value }) => {
@@ -64,13 +39,13 @@ class TokenInteractionForm extends Component {
 
   handleTransferSubmit = async () => {
     this.setState({ transferLoading: true });
-    const { transferTo, token, userEthAddr } = this.state;
+    const { transferTo } = this.state;
+    const { tokenInstance, userEthAddress } = this.props;
     let { transferAmount } = this.state;
-    log(this.state);
     transferAmount = parseFloat(transferAmount);
 
-    await token.transfer(transferTo, transferAmount, {
-      from: userEthAddr
+    await tokenInstance.transfer(transferTo, transferAmount, {
+      from: userEthAddress
     });
     this.setState({
       transferTo: "",
@@ -83,13 +58,13 @@ class TokenInteractionForm extends Component {
   // handle known exploit
   handleApproveSubmit = async () => {
     this.setState({ approveLoading: true });
-    const { approvee, token, userEthAddr } = this.state;
+    const { approvee } = this.state;
+    const { tokenInstance, userEthAddress } = this.props;
     let { approveeAllowance } = this.state;
-    log(this.state);
     approveeAllowance = parseFloat(approveeAllowance);
 
-    await token.approve(approvee, approveeAllowance, {
-      from: userEthAddr
+    await tokenInstance.approve(approvee, approveeAllowance, {
+      from: userEthAddress
     });
     this.setState({
       approvee: "",
@@ -100,9 +75,9 @@ class TokenInteractionForm extends Component {
   };
 
   handleBalanceCheckSubmit = async () => {
-    const { tokenAddress, balance_account } = this.state;
-    log(this.state);
-    let balance = await getBalance(tokenAddress, balance_account);
+    const { balance_account } = this.state;
+    const { tokenInstance } = this.props;
+    let balance = await getBalance(tokenInstance, balance_account);
     log("handled balance check", balance);
     const addr = balance_account;
     this.setState({
@@ -114,12 +89,11 @@ class TokenInteractionForm extends Component {
   };
 
   handleAllowanceCheckSubmit = async () => {
-    const { tokenAddress, allowance_account, userEthAddr } = this.state;
-    log(this.state);
+    const { allowance_account } = this.state;
+    const { userEthAddress, tokenInstance } = this.props;
     let allowance = await getAllowance(
-      this.props.tokenAbstraction,
-      tokenAddress,
-      userEthAddr,
+      tokenInstance,
+      userEthAddress,
       allowance_account
     );
     const addr = allowance_account;
@@ -134,15 +108,16 @@ class TokenInteractionForm extends Component {
 
   handleTransferToSubmit = async () => {
     this.setState({ transferToLoading: true });
-    const { transferTo_To, transferTo_From, token, userEthAddr } = this.state;
+    const { transferTo_To, transferTo_From } = this.state;
+    const { tokenInstance, userEthAddress } = this.props;
     let { transferTo_Amount } = this.state;
     transferTo_Amount = parseFloat(transferTo_Amount);
 
-    await token.transferFrom(
+    await tokenInstance.transferFrom(
       transferTo_From,
       transferTo_To,
       transferTo_Amount,
-      { from: userEthAddr }
+      { from: userEthAddress }
     );
     this.setState({
       transferTo_From: "",

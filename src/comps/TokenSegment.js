@@ -102,6 +102,7 @@ class TokenSegment extends Component {
     }
     this.setState({ tokens: copy });
   };
+
   render() {
     const { tokens } = this.state;
     log("TOKEN_SEGMENT render state", this.state);
@@ -120,7 +121,7 @@ class TokenSegment extends Component {
               decimals={token.decimals}
               onDeleteClick={this.deleteToken}
               userEthAddress={this.props.userEthAddress}
-              tokenAbstraction={this.tokenAbstraction}
+              tokenAbstraction={this.props.tokenAbstraction}
             />
           );
         } else return <></>;

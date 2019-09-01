@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { Card, Grid, Header, Button } from "semantic-ui-react";
 import TokenDetail from "./TokenDetail";
-import { getBalance, log } from "../data_utils";
+import { getBalance, getContractUtil, log } from "../data_utils";
 
 class TokenCard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: 0
+      balance: 0,
+      tokenInstance: ""
     };
   }
 
@@ -18,21 +19,30 @@ class TokenCard extends Component {
   ...
   */
   async componentDidMount() {
-    let balance = await getBalance(
-      this.props.tokenAbstraction,
-      this.props.fullTokenAddress,
-      this.props.userEthAddress
+    log("TOKEN_CARD componentDidMount props", this.props);
+    const { tokenAbstraction, fullTokenAddress } = this.props;
+
+    // get token instance for this card
+    let tokenInstance = await getContractUtil(
+      tokenAbstraction,
+      fullTokenAddress
     );
-    this.setState({ balance: balance.toNumber() });
+
+    let balance = await getBalance(tokenInstance, this.props.userEthAddress);
+    log("TOKEN_CARD componentDidMount balance", balance);
+    this.setState({
+      balance: balance.toNumber(),
+      tokenInstance: tokenInstance
+    });
   }
 
   onDeleteClick = () => {
-    log("onDeleteClick", this.props);
+    log("TOKEN_CARD onDeleteClick", this.props);
     this.props.onDeleteClick(this.props.fullTokenAddress);
   };
 
   render() {
-    const { balance } = this.state;
+    const { balance, tokenInstance } = this.state;
     return (
       <Card className="tokenInfo">
         <Card.Content extra>
@@ -64,8 +74,9 @@ class TokenCard extends Component {
               fullTokenAddress={this.props.fullTokenAddress}
               symbol={this.props.symbol}
               decimals={this.props.decimals}
+              userEthAddress={this.props.userEthAddress}
               balance={balance}
-              tokenAbstraction={this.tokenAbstraction}
+              tokenInstance={tokenInstance}
             />
             <Button basic color="red" onClick={this.onDeleteClick}>
               Delete

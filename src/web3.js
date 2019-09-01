@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import { ERROR } from "./errorCodes";
 
 const askForPermission = async () => {
   console.log("web3 ethereum", window.ethereum);
@@ -14,7 +15,7 @@ const askForPermission = async () => {
     } catch (error) {
       // user denied access
       console.log("web3 connection denied", error);
-      return 2;
+      return ERROR.DENIED_ACCESS;
     }
   }
 };
@@ -43,7 +44,7 @@ async function getWeb3(connectRequest) {
       }
     } else {
       console.log("Not logged in to Metamask");
-      web3 = 1;
+      web3 = ERROR.METAMASK_NO_LOGIN;
     }
   }
   // Legacy dapp browsers...

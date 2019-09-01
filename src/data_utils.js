@@ -41,29 +41,6 @@ export async function getContractUtil(abstraction, address) {
   return contract;
 }
 
-// TODO: remove. the function above does this
-export async function getTokenUtil(tokenAbstraction, tokenAddress) {
-  if (tokenAbstraction === 0 || tokenAddress === 0) {
-    return 0;
-  }
-  let tokenInstance;
-
-  try {
-    tokenInstance = await tokenAbstraction.at(tokenAddress);
-  } catch (err) {
-    console.log("****4***** " + err);
-    console.log(
-      "%cFailed to get token instance with the given abstraction",
-      tokenAbstraction,
-      "font-weight: bold; font-size: big"
-    );
-    return 0;
-  }
-
-  console.log("got tokenInstance: " + tokenInstance);
-  return tokenInstance;
-}
-
 export async function getTokenCountUtil(factoryInstance, userAddress) {
   let count = 0;
   try {
@@ -85,10 +62,12 @@ export function cleanupAddress(address) {
   return result;
 }
 
-export async function getBalance(tokenAbstraction, tokenAddress, address) {
+// tokenInst: the particular token to check
+// address: the address of the owner of tokens whose balance you want
+export async function getBalance(tokenInst, address) {
   let balance;
 
-  let tokenInst = await getContractUtil(tokenAbstraction, tokenAddress);
+  console.log("tokenInst", tokenInst);
   try {
     balance = await tokenInst.balanceOf(address);
   } catch (err) {
@@ -99,15 +78,9 @@ export async function getBalance(tokenAbstraction, tokenAddress, address) {
   return balance;
 }
 
-export async function getAllowance(
-  tokenAbstraction,
-  tokenAddress,
-  allowerAddr,
-  allowedAddr
-) {
+export async function getAllowance(tokenInst, allowerAddr, allowedAddr) {
   let allowance;
 
-  let tokenInst = await getContractUtil(tokenAbstraction, tokenAddress);
   try {
     allowance = await tokenInst.allowance(allowerAddr, allowedAddr);
   } catch (err) {

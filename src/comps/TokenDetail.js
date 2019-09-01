@@ -49,8 +49,9 @@ class TokenDetail extends Component {
                   </Grid.Row>
                   <Grid.Row>
                     <TokenInteractionForm
+                      userEthAddress={this.props.userEthAddress}
                       tokenAddress={this.props.fullTokenAddress}
-                      tokenAbstraction={this.tokenAbstraction}
+                      tokenInstance={this.props.tokenInstance}
                     />
                   </Grid.Row>
                 </Grid>
