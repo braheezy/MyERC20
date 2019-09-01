@@ -1,8 +1,8 @@
-import web3 from "./web3";
-import MyERC20 from "./token";
-import TruffleContract from "truffle-contract";
+export async function getEthAccountUtil(index, web3) {
+  if (window.ethereum.selectedAddress) {
+    return window.ethereum.selectedAddress;
+  }
 
-export async function getEthAccountUtil(index) {
   let accounts;
   try {
     accounts = await web3.eth.getAccounts();
@@ -10,7 +10,7 @@ export async function getEthAccountUtil(index) {
     console.log("****1***** " + err);
     console.log(
       "%cProbably something with MetaMask, which we depend on at this point.\nAre you running MetaMask?\nIs MetaMask pointing to the correct port?\nFor devs: did you import the Ganache seed phrase to MetaMask?",
-      "font-weight: bold; font-size: large"
+      "font-weight: bold; font-size: big"
     );
     return 0;
   }
@@ -26,7 +26,7 @@ export async function getContractUtil(abstraction, address) {
       console.log("****2***** " + err);
       console.log(
         "%cProbably no ethereum network available to connect to.\nAre you running Ganache?\nIs MetaMask pointing to the correct port?",
-        "font-weight: bold; font-size: large"
+        "font-weight: bold; font-size: big"
       );
       return 0;
     }
@@ -65,7 +65,7 @@ export async function getTokenUtil(tokenAbstraction, tokenAddress) {
 }
 
 export async function getTokenCountUtil(factoryInstance, userAddress) {
-  let count;
+  let count = 0;
   try {
     count = await factoryInstance.getCount({ from: userAddress });
   } catch (err) {
@@ -85,12 +85,10 @@ export function cleanupAddress(address) {
   return result;
 }
 
-export async function getBalance(tokenAddress, address) {
+export async function getBalance(tokenAbstraction, tokenAddress, address) {
   let balance;
-  let token = TruffleContract(MyERC20);
-  token.setProvider(web3.currentProvider);
 
-  let tokenInst = await getContractUtil(token, tokenAddress);
+  let tokenInst = await getContractUtil(tokenAbstraction, tokenAddress);
   try {
     balance = await tokenInst.balanceOf(address);
   } catch (err) {
@@ -101,12 +99,15 @@ export async function getBalance(tokenAddress, address) {
   return balance;
 }
 
-export async function getAllowance(tokenAddress, allowerAddr, allowedAddr) {
+export async function getAllowance(
+  tokenAbstraction,
+  tokenAddress,
+  allowerAddr,
+  allowedAddr
+) {
   let allowance;
-  let token = TruffleContract(MyERC20);
-  token.setProvider(web3.currentProvider);
 
-  let tokenInst = await getContractUtil(token, tokenAddress);
+  let tokenInst = await getContractUtil(tokenAbstraction, tokenAddress);
   try {
     allowance = await tokenInst.allowance(allowerAddr, allowedAddr);
   } catch (err) {

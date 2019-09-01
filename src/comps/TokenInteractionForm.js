@@ -117,6 +117,7 @@ class TokenInteractionForm extends Component {
     const { tokenAddress, allowance_account, userEthAddr } = this.state;
     log(this.state);
     let allowance = await getAllowance(
+      this.props.tokenAbstraction,
       tokenAddress,
       userEthAddr,
       allowance_account

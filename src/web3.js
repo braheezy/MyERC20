@@ -1,18 +1,65 @@
 import Web3 from "web3";
 
-let web3;
+const askForPermission = async () => {
+  console.log("web3 ethereum", window.ethereum);
+  // only ask for permission if logged into metamask, otherwise
+  // the enable promise will hang
+  if (await window.ethereum._metamask.isUnlocked()) {
+    console.log("web3 trying to enable");
+    try {
+      // TODO: accounts obtained here, dont need to obtain later
+      await window.ethereum.enable();
+      console.log("web3 connection accepted");
+      return window.web3;
+    } catch (error) {
+      // user denied access
+      console.log("web3 connection denied", error);
+      return 2;
+    }
+  }
+};
 
-if (typeof window !== "undefined" && window.web3 !== "undefined") {
-  web3 = window.web3;
-  // In browswer and running metamask
-  web3 = new Web3(web3.currentProvider);
-} else {
-  web3 = new Web3(
-    // get provider from infura
-    new Web3.providers.HttpProvider(
-      "https://rinkeby.infura.io/v3/0144fd7a7423401caa4b4479b5e26ba2"
-    )
-  );
+// param: connectRequest: true if metamask should ask for connection
+async function getWeb3(connectRequest) {
+  // return variable
+  let web3 = window.web3;
+  // Modern dapp browsers...
+  if (window.ethereum) {
+    console.log("Modern dapp browser detected");
+    // are they logged in?
+    if (await window.ethereum._metamask.isUnlocked()) {
+      web3 = new Web3(window.ethereum);
+      // did they already approve this app for metamask use?
+      if (await window.ethereum._metamask.isApproved()) {
+        console.log("Already approved browser");
+        web3 = window.web3;
+      }
+      // are they requesting a metamask connection?
+      else if (connectRequest) {
+        web3 = await askForPermission();
+      } else {
+        // don't have cached approval and not requesting one
+        web3 = 0;
+      }
+    } else {
+      console.log("Not logged in to Metamask");
+      web3 = 1;
+    }
+  }
+  // Legacy dapp browsers...
+  else if (window.web3) {
+    console.log("Legacy dapp browser detected");
+    web3 = new Web3(web3.currentProvider);
+  } else {
+    console.log("No dapp browser abilities. trying infura");
+    web3 = new Web3(
+      // get provider from infura
+      new Web3.providers.HttpProvider(
+        "https://rinkeby.infura.io/v3/0144fd7a7423401caa4b4479b5e26ba2"
+      )
+    );
+  }
+  return web3;
 }
 
-export default web3;
+export default getWeb3;

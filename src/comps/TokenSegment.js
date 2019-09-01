@@ -28,16 +28,14 @@ class TokenSegment extends Component {
     };
   }
 
+  componentDidMount() {
+    log("TOKEN_SEGMENT didMount props", this.props);
+  }
+
   async componentDidUpdate(prevProps) {
     if (this.props !== prevProps) {
       log("TOKEN_SEGMENT didUpdate props", this.props);
       log("TOKEN_SEGMENT didUpdate prevProps", prevProps);
-      // should we be showing?
-      if (this.props.checking !== prevProps.checking) {
-        this.setState({
-          checking: this.props.checking
-        });
-      }
       // only way for array length to change from props is an increase
       if (
         this.props.tokenInfoArray.length !== prevProps.tokenInfoArray.length
@@ -105,7 +103,7 @@ class TokenSegment extends Component {
     this.setState({ tokens: copy });
   };
   render() {
-    const { tokens, checking } = this.state;
+    const { tokens } = this.state;
     log("TOKEN_SEGMENT render state", this.state);
     if (this.props.showTokens === true) {
       const tokenList = tokens.map((token, index) => {
@@ -122,13 +120,14 @@ class TokenSegment extends Component {
               decimals={token.decimals}
               onDeleteClick={this.deleteToken}
               userEthAddress={this.props.userEthAddress}
+              tokenAbstraction={this.tokenAbstraction}
             />
           );
         } else return <></>;
       });
 
       return <List className="tokenInfoList">{tokenList}</List>;
-    } else if (checking) {
+    } else if (this.props.checking) {
       return (
         <Dimmer inverted active style={{ height: "5em" }}>
           <Loader size="tiny">Fetching tokens...</Loader>

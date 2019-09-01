@@ -50,6 +50,7 @@ class TokenDetail extends Component {
                   <Grid.Row>
                     <TokenInteractionForm
                       tokenAddress={this.props.fullTokenAddress}
+                      tokenAbstraction={this.tokenAbstraction}
                     />
                   </Grid.Row>
                 </Grid>

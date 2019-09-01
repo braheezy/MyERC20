@@ -48,6 +48,9 @@ class TokenCreateForm extends Component {
           size="big"
           content="Create Token"
           onClick={this.onClick}
+          disabled={
+            this.props.factory && this.props.userEthAddress ? false : true
+          }
         />
         <Divider hidden />
         <Form.Input

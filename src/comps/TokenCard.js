@@ -19,6 +19,7 @@ class TokenCard extends Component {
   */
   async componentDidMount() {
     let balance = await getBalance(
+      this.props.tokenAbstraction,
       this.props.fullTokenAddress,
       this.props.userEthAddress
     );
@@ -64,6 +65,7 @@ class TokenCard extends Component {
               symbol={this.props.symbol}
               decimals={this.props.decimals}
               balance={balance}
+              tokenAbstraction={this.tokenAbstraction}
             />
             <Button basic color="red" onClick={this.onDeleteClick}>
               Delete
