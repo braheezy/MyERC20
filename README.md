@@ -12,7 +12,7 @@ I completed the following in this application:
    - Learned CSS basics, HTML basics, Javascript, [React](https://reactjs.org/), [Semantic UI](https://react.semantic-ui.com/)
    - Became more comfortable with connecting to web3 via MetaMask
    - Bettered my project architecture skills
- - Manage smart contracts with Truffle suite and use Ganache for development
+ - Manage smart contracts with Truffle suite and use [Ganache](https://www.trufflesuite.com/ganache) for development
 
 This project is by nowhere near complete. I could spend months fiddling and improving usability and interface friendlieness. The longer I use the app, the more QoL improvements and edge cases I find that could be handled. But life is short and there more projects to work on, especially those more smart contract based (sorry web dev). Keep an open mind as you use it.
    
@@ -26,6 +26,7 @@ This application provides very basic token management services:
 You'll need 
   - [Node](https://nodejs.org/en/)
   - [MetaMask](https://metamask.io/) connection to the Rinkeby test network
+    - Alternatively, you can run [Ganache](https://www.trufflesuite.com/ganache) on localhost and use Truffle to migrate the contracts to your network manually. See these [docs](https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations)
   
 To run, download and do the following in a terminal:
 
