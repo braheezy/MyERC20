@@ -26,7 +26,8 @@ This application provides very basic token management services:
 You'll need 
   - [Node](https://nodejs.org/en/)
   - [MetaMask](https://metamask.io/) connection to the Rinkeby test network
-    - Alternatively, you can run [Ganache](https://www.trufflesuite.com/ganache) on localhost and use Truffle to migrate the contracts to your network manually. See these [docs](https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations)
+    - There will be long delays on Rinkeby as transactions take time to get confirmed
+    - Alternatively, you can run [Ganache](https://www.trufflesuite.com/ganache) on localhost and use Truffle to migrate the contracts to your network manually. See these [docs](https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations). Transactions will be confirmed instantly.
   
 To run, download and do the following in a terminal:
 
