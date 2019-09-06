@@ -1,6 +1,14 @@
 # MyERC20
 
-## Why it exists
+## Table of Contents  
+1  [Why it exists](#why_exists)  
+2  [What it does](#what_does)  
+3  [Run](#run)  
+4  [Things you can do](#things_to_do)  
+5  [Troubleshooting](#troubleshooting)  
+
+
+### Why it exists <a name="why_exists"/>
 The original goal was to learn more Solidity and smart contract development. Without some way to interact with the contract, I had no nice way to show it worked. Because I also have interest in becoming a Dapp developer, I decided to use this oppurtunity to learn web development and hook up a web client. 
 
 I completed the following in this application:
@@ -16,13 +24,13 @@ I completed the following in this application:
 
 This project is by nowhere near complete. I could spend months fiddling and improving usability and interface friendlieness. The longer I use the app, the more QoL improvements and edge cases I find that could be handled. But life is short and there more projects to work on, especially those more smart contract based (sorry web dev). Keep an open mind as you use it.
    
-## What it does
+### What it does <a name="what_does"/>
 This application provides very basic token management services:
 
 - Create new [ERC20](https://eips.ethereum.org/EIPS/eip-20) tokens
 - Perform all [ERC20](https://eips.ethereum.org/EIPS/eip-20)-sanctioned methods
 
-## Run
+### Run <a name="run"/>
 You'll need 
   - [Node](https://nodejs.org/en/)
   - [MetaMask](https://metamask.io/) connection to the Rinkeby test network
@@ -36,7 +44,7 @@ To run, download and do the following in a terminal:
 * Ensure [Metamask](https://metamask.io/) is installed
 * `npm run start`
 
-## Things you can do
+### Things you can do <a name="things_to_do"/>
 I'll point how to use the app and various things I did to make it work smoothly for a user. If you are a recruiter, this is me trying to impress you.
 
 It's important to note there is no backend database holding data other than what's on the Ethereum blockchain. Deleting tokens only removes the token from the view and if you reload the page, the token will be back.
@@ -67,5 +75,5 @@ Make more tokens and it's automatically added to the list:
 Finally, delete tokens from the view. At this point, you can retrieve tokens:
   ![delete token](https://github.com/mbraha/MyERC20/blob/master/raw/deleted_token.png)
 
-## Troubleshooting
+### Troubleshooting <a name="troubleshooting"/>
 Feel free to uncomment any log statements and view the web browser console to try and find out what's not working. It's mostly likely the web3 connection or getting access to smart contracts. 
