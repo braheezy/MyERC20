@@ -53,7 +53,7 @@ class TokenCreateForm extends Component {
         />
         <Form.Input
           label="Total Supply"
-          placeholder="Total Supply"
+          placeholder="Total Supply (wei)"
           name="supply"
           type="number"
           required
