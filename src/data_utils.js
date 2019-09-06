@@ -67,14 +67,14 @@ export function cleanupAddress(address) {
 export async function getBalance(tokenInst, address) {
   let balance;
 
-  console.log("tokenInst", tokenInst);
+  //console.log("tokenInst", tokenInst);
   try {
     balance = await tokenInst.balanceOf(address);
   } catch (err) {
     console.log("****8***** " + err);
     return 0;
   }
-  console.log("got balance: " + balance);
+  //console.log("got balance: " + balance);
   return balance;
 }
 
@@ -87,20 +87,20 @@ export async function getAllowance(tokenInst, allowerAddr, allowedAddr) {
     console.log("****9***** ", err);
     return 0;
   }
-  console.log("got allowance: ", allowance);
+  //log("got allowance: ", allowance);
   return allowance;
 }
 
 export async function getTokenInfoUtil(factoryInstance, tokenAddress) {
-  log("DATA_UTIL getTokenInfoUtil params", factoryInstance, tokenAddress);
+  //log("DATA_UTIL getTokenInfoUtil params", factoryInstance, tokenAddress);
   let info;
   try {
     info = await factoryInstance.getTokenInfo(tokenAddress);
   } catch (err) {
-    console.log("****6***** ", err);
+    console.log("****11***** ", err);
     return 0;
   }
-  console.log("got info: ", info);
+  //log("got info: ", info);
   return {
     tokenAddress: tokenAddress,
     supply: parseInt(info[0]),
@@ -111,6 +111,7 @@ export async function getTokenInfoUtil(factoryInstance, tokenAddress) {
 }
 
 export async function getTokenAddressUtil(factoryInstance, ethAddress, idx) {
+  //log("DATA_UTIL getTokenAddressUtil params", factoryInstance, ethAddress, idx);
   let tokenAddress;
   try {
     tokenAddress = await factoryInstance.tokenHolders(ethAddress, idx);

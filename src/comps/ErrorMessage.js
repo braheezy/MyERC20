@@ -4,14 +4,6 @@ import { log } from "../data_utils";
 import { ERROR } from "../errorCodes";
 
 class ErrorMessage extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    log("META_MASK_MESSAGE didMount props", this.props);
-  }
-
   renderMessageText = idx => {
     switch (idx) {
       case 0:

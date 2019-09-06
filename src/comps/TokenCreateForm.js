@@ -9,10 +9,6 @@ class TokenCreateForm extends Component {
     this.state = { name: "", supply: "", symbol: "", decimal: "" };
   }
 
-  componentDidMount() {
-    log("TOKEN_CREATE_FORM didMount props", this.props);
-  }
-
   handleChange = (e, { name, value }) => {
     // TODO: need to let user know we only take int
     if (name === "supply" || name === "decimal") value = parseInt(value);
@@ -22,10 +18,9 @@ class TokenCreateForm extends Component {
   handleSubmit = async () => {
     const { name, supply, symbol, decimal } = this.state;
     const { factory, userEthAddress } = this.props;
-    let success = false,
-      result;
+    let success = false;
     try {
-      result = await factory.createToken(supply, name, symbol, decimal, {
+      await factory.createToken(supply, name, symbol, decimal, {
         from: userEthAddress
       });
       success = true;
@@ -34,7 +29,6 @@ class TokenCreateForm extends Component {
       return 0;
     }
     if (success) {
-      log("TOKEN_CREATE_FORM handleSubmit result", result);
       this.props.addToken();
     }
     this.setState({ name: "", supply: "", symbol: "", decimal: "" });
@@ -47,7 +41,6 @@ class TokenCreateForm extends Component {
           primary
           size="big"
           content="Create Token"
-          onClick={this.onClick}
           disabled={!this.props.connected}
         />
         <Divider hidden />

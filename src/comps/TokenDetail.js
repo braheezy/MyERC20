@@ -12,7 +12,7 @@ class TokenDetail extends Component {
   }
 
   handleOpen = () => {
-    log("tokenDetail Open props", this.props);
+    //log("tokenDetail Open props", this.props);
     this.setState({ modalOpen: true });
   };
 

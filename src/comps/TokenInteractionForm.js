@@ -5,7 +5,7 @@ import { getBalance, getAllowance, log } from "../data_utils";
 class TokenInteractionForm extends Component {
   constructor(props) {
     super(props);
-    log("TOKEN_INTERACTION_FORM constructor props", props);
+    //log("TOKEN_INTERACTION_FORM constructor props", props);
 
     this.state = {
       transferTo: "",
@@ -28,9 +28,6 @@ class TokenInteractionForm extends Component {
       balance: 0,
       allowance: 0
     };
-  }
-  async componentDidMount() {
-    log("TOKEN_INTERACTION_FORM didMount this.props", this.props);
   }
 
   handleChange = (e, { name, value }) => {
@@ -55,7 +52,7 @@ class TokenInteractionForm extends Component {
     });
   };
 
-  // handle known exploit
+  //TODO: handle known exploit
   handleApproveSubmit = async () => {
     this.setState({ approveLoading: true });
     const { approvee } = this.state;
@@ -78,7 +75,7 @@ class TokenInteractionForm extends Component {
     const { balance_account } = this.state;
     const { tokenInstance } = this.props;
     let balance = await getBalance(tokenInstance, balance_account);
-    log("handled balance check", balance);
+    //log("handled balance check", balance);
     const addr = balance_account;
     this.setState({
       balance_account: "",
@@ -97,7 +94,7 @@ class TokenInteractionForm extends Component {
       allowance_account
     );
     const addr = allowance_account;
-    log("handled allowance check", allowance);
+    //log("handled allowance check", allowance);
     this.setState({
       allowance_account: "",
       allowance_account_address: addr,
@@ -149,7 +146,7 @@ class TokenInteractionForm extends Component {
       transferToLoading,
       transferToSuccess
     } = this.state;
-    log("redner showBalance", showBalance);
+    //log("render showBalance", showBalance);
     return (
       <Grid>
         <Grid.Row columns={2}>

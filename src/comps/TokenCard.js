@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Grid, Header, Button } from "semantic-ui-react";
+import { Card, Grid, Header, Button, Popup } from "semantic-ui-react";
 import TokenDetail from "./TokenDetail";
 import { getBalance, getContractUtil, log } from "../data_utils";
 
@@ -19,7 +19,7 @@ class TokenCard extends Component {
   ...
   */
   async componentDidMount() {
-    log("TOKEN_CARD componentDidMount props", this.props);
+    //log("TOKEN_CARD componentDidMount props", this.props);
     const { tokenAbstraction, fullTokenAddress } = this.props;
 
     // get token instance for this card
@@ -29,7 +29,7 @@ class TokenCard extends Component {
     );
 
     let balance = await getBalance(tokenInstance, this.props.userEthAddress);
-    log("TOKEN_CARD componentDidMount balance", balance);
+    //log("TOKEN_CARD componentDidMount balance", balance);
     this.setState({
       balance: balance.toNumber(),
       tokenInstance: tokenInstance
@@ -37,8 +37,8 @@ class TokenCard extends Component {
   }
 
   onDeleteClick = () => {
-    log("TOKEN_CARD onDeleteClick", this.props);
-    this.props.onDeleteClick(this.props.fullTokenAddress);
+    //log("TOKEN_CARD onDeleteClick", this.props);
+    this.props.updateTokenRender(this.props.fullTokenAddress, "delete");
   };
 
   render() {
@@ -78,9 +78,16 @@ class TokenCard extends Component {
               balance={balance}
               tokenInstance={tokenInstance}
             />
-            <Button basic color="red" onClick={this.onDeleteClick}>
-              Delete
-            </Button>
+            <Popup
+              basic
+              content="Only deletes token from this GUI. Can be retrieved at any time"
+              trigger={
+                <Button basic color="red" onClick={this.onDeleteClick}>
+                  Delete
+                </Button>
+              }
+              size="large"
+            ></Popup>
           </div>
         </Card.Content>
       </Card>
