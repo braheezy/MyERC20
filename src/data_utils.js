@@ -1,6 +1,6 @@
 export async function getEthAccountUtil(index, web3) {
-  if (window.ethereum.selectedAddress) {
-    return window.ethereum.selectedAddress;
+  if (web3.currentProvider.selectedAddress) {
+    return web3.currentProvider.selectedAddress;
   }
 
   let accounts;

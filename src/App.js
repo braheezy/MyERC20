@@ -60,7 +60,7 @@ class App extends Component {
     this.tokenAbstraction = TruffleContract(MyERC20);
   }
   async componentDidMount() {
-    let web3 = await getWeb3(false);
+    let web3 = await getWeb3();
     log("APP componentDidMount web3", web3);
 
     await this.setupEthereumEnv(web3);
@@ -158,6 +158,11 @@ class App extends Component {
     switch (web3) {
       case ERROR.UNKNOWN:
         // user needs to click connect button and enable metamask
+        this.setState({
+          checking: false,
+          showErrorMessage: false,
+          messageCode: ERROR.UNKNOWN
+        });
         break;
       case ERROR.METAMASK_NO_LOGIN:
         // not logged in
@@ -170,13 +175,15 @@ class App extends Component {
       case ERROR.DENIED_ACCESS:
         // user denied connection
         this.setState({
+          checking: false,
           showErrorMessage: true,
           messageCode: ERROR.DENIED_ACCESS
         });
         break;
       default:
         // good web3 obtained, so grab everything
-        this.finishConnection(web3);
+        log("APP setupEthereumEnv finishConnection web3", web3);
+        await this.finishConnection(web3);
     }
 
     //log("APP setupEthereumEnv end state", this.state);
@@ -191,6 +198,7 @@ class App extends Component {
   finishConnection = async web3 => {
     this.factoryAbstraction.setProvider(web3.currentProvider);
     this.tokenAbstraction.setProvider(web3.currentProvider);
+
     log("APP this.factoryAbstraction", this.factoryAbstraction);
 
     let tmp_address = await getEthAccountUtil(0, web3);
@@ -240,10 +248,10 @@ class App extends Component {
     }
   };
 
-  onConnect = async (e, props) => {
+  onConnect = async () => {
     //log("APP onConnect props", props);
     let web3 = await getWeb3(true);
-    //log("APP onConnect web3", web3);
+    log("APP onConnect web3", web3);
     await this.setupEthereumEnv(web3);
   };
   render() {
@@ -267,6 +275,7 @@ class App extends Component {
         <Grid.Row>
           <RetrieveTokenForm
             updateTokenRender={this.updateTokenRender}
+            connected={this.state.connected}
           ></RetrieveTokenForm>
         </Grid.Row>
         <Grid.Row>

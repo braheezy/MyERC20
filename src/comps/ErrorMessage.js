@@ -14,6 +14,7 @@ class ErrorMessage extends Component {
         return "Not logged into MetaMask.";
       case ERROR.DENIED_ACCESS:
         // user denied connection
+        return "You should allow MetaMask connection. Refresh page and connect!";
         break;
       case ERROR.NO_FACTORY:
         // metamask good, no factory

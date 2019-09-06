@@ -26,7 +26,7 @@ class RetrieveTokenForm extends Component {
       <Form onSubmit={this.handleSubmit}>
         <Header content="Retrieve Tokens Here:" />
         <Form.Group>
-          <Form.Button content="Get it" />
+          <Form.Button content="Get it" disabled={!this.props.connected} />
           <Form.Input
             placeholder="Address..."
             onChange={this.handleChange}
