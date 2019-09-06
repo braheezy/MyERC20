@@ -6,7 +6,13 @@ class TokenCreateForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { name: "", supply: "", symbol: "", decimal: "" };
+    this.state = {
+      name: "",
+      supply: "",
+      symbol: "",
+      decimal: "",
+      creating: false
+    };
   }
 
   handleChange = (e, { name, value }) => {
@@ -20,9 +26,11 @@ class TokenCreateForm extends Component {
     const { factory, userEthAddress } = this.props;
     let success = false;
     try {
+      this.setState({ creating: true });
       await factory.createToken(supply, name, symbol, decimal, {
         from: userEthAddress
       });
+      this.setState({ creating: false });
       success = true;
     } catch (err) {
       log("TOKEN_CREATE_FORM*********", err);
@@ -36,7 +44,7 @@ class TokenCreateForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form loading={this.state.creating} onSubmit={this.handleSubmit}>
         <Form.Button
           primary
           size="big"
