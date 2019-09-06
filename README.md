@@ -22,7 +22,9 @@ I completed the following in this application:
    - Bettered my project architecture skills
  - Manage smart contracts with Truffle suite and use [Ganache](https://www.trufflesuite.com/ganache) for development
 
-This project is by nowhere near complete. I could spend months fiddling and improving usability and interface friendlieness. The longer I use the app, the more QoL improvements and edge cases I find that could be handled. But life is short and there more projects to work on, especially those more smart contract based (sorry web dev). Keep an open mind as you use it.
+This project is nowhere near complete. I could spend months fiddling and improving usability and interface friendlieness. The longer I use the app, the more QoL improvements and edge cases I find that could be handled. I have not stressed test it and placed it under extreme use or environments. That said, the app should work and not break under normal operation.
+
+Life is short and there are more projects to work on, especially more focused on smart contract (sorry web dev). Keep an open mind as you use it because it's my first :)
    
 ### What it does <a name="what_does"/>
 This application provides very basic token management services:
