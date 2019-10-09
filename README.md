@@ -43,7 +43,7 @@ To run, download and do the following in a terminal:
 
 * `cd MyERC20`
 * `npm install`
-* `npm install truffle-contract' if necessary
+* `npm install truffle-contract` if necessary
 * `truffle migrate`
 * Ensure [Metamask](https://metamask.io/) is installed
 * `npm run start`
